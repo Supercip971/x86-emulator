@@ -19,19 +19,11 @@ void x86_emulator::start()
 {
     log$("started x86 emulator with starting addr: {}", _loader->start_addr());
     registers.rip = _loader->start_addr();
-    int i = 0;
     x86_decoder dec;
     while (true)
     {
         registers.prip = registers.rip;
         if (dec.run_handler(this) == 0)
-        {
-            return;
-        }
-        else
-        {
-        }
-        if (i++ > 20)
         {
             return;
         }
