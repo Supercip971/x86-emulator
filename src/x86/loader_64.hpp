@@ -1,25 +1,22 @@
-#pragma once 
-#include "loader.hpp"
+#pragma once
 #include <elf.h>
+#include "loader.hpp"
 
-namespace fp 
+namespace fp
 {
-    class x86_64_loader : public loader
-    {
-        protected:
+class x86_64_loader : public loader
+{
+protected:
+    Elf64_Ehdr *_header;
+    void load_entry(memory_map *mem_map, Elf64_Phdr *header, char *data);
+    bool check_header();
 
-        
-        Elf64_Ehdr* _header; 
-        void load_entry(memory_map* mem_map, Elf64_Phdr* header, char* data);
-        bool check_header();
-        public: 
+public:
+    virtual uintptr_t start_addr() final;
+    virtual void load(memory_map *target, char *data) final;
+};
 
-        virtual uintptr_t start_addr() final;
-        virtual void load(memory_map* target, char* data) final;
-    };
-    
-    
-    template<>
-    loader* loader::load_data<x86_64_loader>(memory_map* target, char* data);
-   
-}
+template <>
+loader *loader::load_data<x86_64_loader>(memory_map *target, char *data);
+
+} // namespace fp
