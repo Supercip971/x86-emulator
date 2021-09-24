@@ -45,10 +45,9 @@ int x86_emulator::ins_invalid(x86_instruction &instruction)
 {
     error$("invalid/unsupported instruction: (at: {:#x})", registers.prip);
 
-    for (size_t i = 0; i < instruction.ins_stack.size(); i++)
-    {
-        error$("data[{}] = {:#x}", i, instruction.ins_stack[i]);
-    }
+    log$("instruction info:");
+    instruction.dump();
+
     return 0;
 }
 

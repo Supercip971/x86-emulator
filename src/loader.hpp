@@ -3,7 +3,7 @@
 #include "memory.hpp"
 namespace fp
 {
-    
+
 class loader
 {
 protected:

@@ -1,8 +1,51 @@
 #include "x86/decoder_64.hpp"
-
+#include "utils/log.hpp"
 namespace fp
 {
 
+void x86_instruction::dump()
+{
+    log$("prefixes: ");
+    if (has_rex)
+    {
+        debug$("rex prefix: ");
+
+        debug$("- w: {}", rex.w);
+        debug$("- r: {}", rex.r);
+        debug$("- x: {}", rex.x);
+        debug$("- b: {}", rex.b);
+    }
+    for (size_t i = 0; i < ins_prefixes.size(); i++)
+    {
+        if (ins_prefixes[i] == x86_prefixes::REPN)
+        {
+            debug$("- prefix: REPN");
+        }
+        else if (ins_prefixes[i] == x86_prefixes::REPZ)
+        {
+            debug$("- prefix: REPZ");
+        }
+    }
+
+    log$("mod rm: ");
+
+    if (has_mod_rm)
+    {
+        debug$("- disp: {}", mod_rm.get_disp());
+        debug$("- reg: {}", mod_rm.get_reg());
+        debug$("- rm: {}", mod_rm.get_rm());
+        debug$("- mod: {}", mod_rm.get_mod());
+    }
+
+    log$("raw informations:");
+
+    debug$("instruction:");
+
+    for (size_t i = 0; i < ins_stack.size(); i++)
+    {
+        log$("[{}]: {:#x}", i, ins_stack[i]);
+    }
+}
 int x86_decoder::interp_opcode_endbr(x86_instructions_handler *handler)
 {
     uint8_t byte = fetch_byte(handler);
@@ -106,7 +149,7 @@ int x86_decoder::interp_prefix(x86_instructions_handler *handler)
         cur = fetch_byte(handler);
 
         curr_decoded_ins.has_rex = true;
-        
+
         curr_decoded_ins.rex.b = cur & (1 << 0);
         curr_decoded_ins.rex.x = cur & (1 << 1);
         curr_decoded_ins.rex.r = cur & (1 << 2);

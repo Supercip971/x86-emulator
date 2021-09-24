@@ -28,7 +28,8 @@ void x86_emulator::start()
         registers.prip = registers.rip;
         if (dec.run_handler(this) == 0)
         {
-            return;
+            error$("error in the handler, exiting...");
+            exit(1);
         }
     }
 }

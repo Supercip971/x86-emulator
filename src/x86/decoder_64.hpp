@@ -44,7 +44,7 @@ struct x86_mod_rm
     }
 };
 
-struct x86_rex_prefix 
+struct x86_rex_prefix
 {
     bool w;
     bool r;
@@ -63,6 +63,7 @@ public:
     bool has_mod_rm;
     x86_mod_rm mod_rm;
     x86_op_encoding encoding;
+    void dump();
 };
 
 class x86_instructions_handler
