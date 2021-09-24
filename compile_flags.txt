@@ -1,0 +1,4 @@
+-std=c++2a
+-Isrc
+-Isrc/utils
+-Isrc/x86

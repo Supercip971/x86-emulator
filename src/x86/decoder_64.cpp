@@ -18,13 +18,16 @@ int x86_decoder::interp_opcode_endbr(x86_instructions_handler *handler)
         return 0;
     }
 }
+
 bool x86_decoder::is_string_opcode([[maybe_unused]] uint8_t op)
 {
     return false;
 }
+
 int x86_decoder::interp_opcode_0f(x86_instructions_handler *handler)
 {
     uint8_t byte = fetch_byte(handler);
+
     if (byte == 0x1e)
     {
         return interp_opcode_endbr(handler);
@@ -33,27 +36,31 @@ int x86_decoder::interp_opcode_0f(x86_instructions_handler *handler)
     {
         handler->ins_invalid(curr_decoded_ins);
     }
+
     return 0;
 }
 
 int x86_decoder::interp_operand(x86_instructions_handler *handler)
 {
-
     uint8_t byte = fetch_byte(handler);
 
     x86_mod_rm rm;
     rm.value = byte;
 
     curr_decoded_ins.mod_rm = rm;
+
     return 1;
 }
+
 int x86_decoder::interp_xor_opcodes(x86_instructions_handler *handler)
 {
     int r = interp_operand(handler);
+
     if (r == 1)
     {
         return handler->ins_xor(curr_decoded_ins);
     }
+
     return r;
 }
 
@@ -61,6 +68,7 @@ int x86_decoder::interp_opcode(x86_instructions_handler *handler)
 {
 
     uint8_t byte = fetch_byte(handler);
+
     if (byte == 0x0f)
     {
         return interp_opcode_0f(handler);
@@ -74,8 +82,10 @@ int x86_decoder::interp_opcode(x86_instructions_handler *handler)
     {
         handler->ins_invalid(curr_decoded_ins);
     }
+
     return 0;
 }
+
 int x86_decoder::interp_prefix(x86_instructions_handler *handler)
 {
     uint8_t cur = handler->next_byte();
@@ -102,4 +112,5 @@ int x86_decoder::run_handler(x86_instructions_handler *handler)
     curr_decoded_ins.opcodes.clear();
     return interp_prefix(handler);
 }
+
 } // namespace fp

@@ -1,8 +1,10 @@
 #include "memory.hpp"
 #include <string.h>
 #include "utils/log.hpp"
+
 namespace fp
 {
+
 void memory_map::map_memory(uintptr_t virt_addr, size_t size, const void *data)
 {
     log$("mapping: {}-{}", virt_addr, virt_addr + size);
@@ -46,4 +48,5 @@ void *memory_map::get_data_at_addr(uintptr_t addr, size_t size)
 
     return (void *)((uint8_t *)entry->data + (addr - entry->start));
 }
+
 } // namespace fp

@@ -5,6 +5,7 @@
 #include "loader.hpp"
 #include "x86/emulator_64.hpp"
 #include "x86/loader_64.hpp"
+
 char *rd_file(const char *path)
 {
     std::ifstream stream;
@@ -30,6 +31,7 @@ char *rd_file(const char *path)
     stream.close();
     return data;
 }
+
 int main(int argc, char **argv)
 {
     if (argc < 2)

@@ -21,4 +21,5 @@ public:
     template <typename T>
     static emulator *load_emulator([[maybe_unused]] memory_map *mem_map, loader *loader) { return nullptr; };
 };
+
 } // namespace fp

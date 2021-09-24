@@ -1,7 +1,9 @@
 #include "x86/emulator_64.hpp"
 #include "utils/log.hpp"
+
 namespace fp
 {
+
 uint8_t x86_emulator::fetch_byte()
 {
     uint8_t r = next_byte();
@@ -9,6 +11,7 @@ uint8_t x86_emulator::fetch_byte()
     registers.rip += 1;
     return r;
 }
+
 uint8_t x86_emulator::next_byte()
 {
     uint8_t r = _map->read<uint8_t>(registers.rip);
@@ -29,6 +32,7 @@ void x86_emulator::start()
         }
     }
 }
+
 template <>
 emulator *emulator::load_emulator<x86_emulator>(memory_map *mem_map, loader *loader)
 {

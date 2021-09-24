@@ -4,6 +4,7 @@
 
 namespace fp
 {
+
 class x86_64_loader : public loader
 {
 protected:

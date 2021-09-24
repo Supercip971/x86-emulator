@@ -16,6 +16,7 @@ public:
     constexpr const char *func() const { return _func; };
     constexpr int line() const { return _line; };
 };
+
 #define LOC_CURRENT location(__FILE__, __FUNCTION__, __LINE__)
 #define log_impl(ll, format_col, format_str, ...)                                        \
     (                                                                                    \

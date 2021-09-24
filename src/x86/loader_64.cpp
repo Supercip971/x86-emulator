@@ -28,6 +28,7 @@ void x86_64_loader::load_entry(memory_map *target, Elf64_Phdr *header, char *dat
 void x86_64_loader::load(memory_map *target, char *data)
 {
     _header = (Elf64_Ehdr *)data;
+
     if (check_header() != true)
     {
         error$("invalid header, exiting...");
@@ -55,6 +56,7 @@ bool x86_64_loader::check_header()
 
     return true;
 }
+
 template <>
 loader *loader::load_data<x86_64_loader>(memory_map *target, char *data)
 {
@@ -67,4 +69,5 @@ uintptr_t x86_64_loader::start_addr()
 {
     return _header->e_entry;
 }
+
 } // namespace fp

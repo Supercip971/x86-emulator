@@ -17,11 +17,12 @@ enum class x86_op_encoding : uint8_t
     MODRM_MODREG = 3, // mr
     MODREG_MODRM = 4, // rm
 };
+
 struct x86_mod_rm
 {
-
     uint8_t value;
     uint64_t disp;
+
     uint8_t get_mod() const
     {
         return (value >> 6) & (0b11);
@@ -52,6 +53,7 @@ public:
     x86_mod_rm mod_rm;
     x86_op_encoding encoding;
 };
+
 class x86_instructions_handler
 {
 public:
@@ -82,4 +84,5 @@ class x86_decoder
 public:
     int run_handler(x86_instructions_handler *handler);
 };
+
 } // namespace fp

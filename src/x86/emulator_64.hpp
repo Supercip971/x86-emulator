@@ -4,10 +4,7 @@
 #include "x86/decoder_64.hpp"
 namespace fp
 {
-enum class x86_ins
-{
 
-};
 enum class cpu_register
 {
     CPU_REG_RAX = 0,
@@ -19,6 +16,7 @@ enum class cpu_register
     CPU_REG_RSI,
     CPU_REG_RDI,
 };
+
 struct cpu_registers
 {
     union
@@ -32,6 +30,7 @@ struct cpu_registers
         };
         uint64_t regs[20];
     };
+
     uint64_t &get_register(int id)
     {
         return regs[id];
