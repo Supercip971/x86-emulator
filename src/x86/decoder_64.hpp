@@ -44,12 +44,23 @@ struct x86_mod_rm
     }
 };
 
+struct x86_rex_prefix 
+{
+    bool w;
+    bool r;
+    bool x;
+    bool b;
+};
 class x86_instruction
 {
 public:
+    bool has_rex;
+    x86_rex_prefix rex;
     std::vector<uint8_t> ins_stack;
     std::vector<x86_prefixes> ins_prefixes;
     std::vector<uint8_t> opcodes;
+
+    bool has_mod_rm;
     x86_mod_rm mod_rm;
     x86_op_encoding encoding;
 };

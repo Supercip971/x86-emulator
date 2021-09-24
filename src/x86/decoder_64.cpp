@@ -48,7 +48,7 @@ int x86_decoder::interp_operand(x86_instructions_handler *handler)
     rm.value = byte;
 
     curr_decoded_ins.mod_rm = rm;
-
+    curr_decoded_ins.has_mod_rm = true;
     return 1;
 }
 
@@ -92,7 +92,7 @@ int x86_decoder::interp_prefix(x86_instructions_handler *handler)
 
     if (cur == (uint8_t)x86_prefixes::REPZ)
     {
-        cur = handler->fetch_byte();
+        cur = fetch_byte(handler);
         if (is_string_opcode(handler->next_byte()))
         {
             curr_decoded_ins.ins_prefixes.push_back(x86_prefixes::REPZ);
@@ -101,12 +101,26 @@ int x86_decoder::interp_prefix(x86_instructions_handler *handler)
 
         return interp_opcode(handler);
     }
+    else if ((cur & 0b11110000) == 0b01000000 && !curr_decoded_ins.has_rex)
+    {
+        cur = fetch_byte(handler);
+
+        curr_decoded_ins.has_rex = true;
+        
+        curr_decoded_ins.rex.b = cur & (1 << 0);
+        curr_decoded_ins.rex.x = cur & (1 << 1);
+        curr_decoded_ins.rex.r = cur & (1 << 2);
+        curr_decoded_ins.rex.w = cur & (1 << 3);
+        return interp_prefix(handler);
+    }
 
     return interp_opcode(handler);
 }
 
 int x86_decoder::run_handler(x86_instructions_handler *handler)
 {
+    curr_decoded_ins.has_rex = false;
+    curr_decoded_ins.has_mod_rm = false;
     curr_decoded_ins.ins_prefixes.clear();
     curr_decoded_ins.ins_stack.clear();
     curr_decoded_ins.opcodes.clear();
