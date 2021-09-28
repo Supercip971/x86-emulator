@@ -75,4 +75,20 @@ int x86_emulator::ins_xor(x86_instruction &instruction)
     return 0;
 }
 
+int x86_emulator::ins_mov(x86_instruction &instruction)
+{
+    if (instruction.encoding == x86_op_encoding::MODRM_MODREG)
+    {
+        log$("mov [rm reg]: {} {}", instruction.mod_rm.get_rm(), instruction.mod_rm.get_reg());
+
+        uint64_t b = read_op_reg(instruction);
+
+        write_op_rm(b, instruction);
+
+        return 1;
+    }
+    log$("mov instruction: {} - {} - {}", instruction.mod_rm.get_mod(), instruction.mod_rm.get_reg(), instruction.mod_rm.get_rm());
+    return 0;
+}
+
 } // namespace fp

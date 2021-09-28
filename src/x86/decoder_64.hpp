@@ -18,38 +18,49 @@ enum class x86_op_encoding : uint8_t
     MODREG_MODRM = 4, // rm
 };
 
-struct x86_mod_rm
-{
-    uint8_t value;
-    uint64_t disp;
-
-    uint8_t get_mod() const
-    {
-        return (value >> 6) & (0b11);
-    }
-
-    uint8_t get_rm() const
-    {
-        return (value >> 3) & (0b111);
-    }
-
-    uint8_t get_reg() const
-    {
-        return (value)&0b111;
-    }
-
-    uint64_t get_disp() const
-    {
-        return disp;
-    }
-};
-
 struct x86_rex_prefix
 {
     bool w;
     bool r;
     bool x;
     bool b;
+};
+
+struct x86_mod_rm
+{
+    uint8_t value;
+    uint64_t disp;
+    uint8_t mod;
+    uint8_t rm;
+    uint8_t reg;
+
+    bool sib_follows;
+    x86_mod_rm(){};
+
+    bool has_sib() const
+    {
+        return sib_follows;
+    }
+
+    uint8_t get_mod() const
+    {
+        return mod;
+    }
+
+    uint8_t get_rm() const
+    {
+        return rm;
+    }
+
+    uint8_t get_reg() const
+    {
+        return reg;
+    }
+
+    uint64_t get_disp() const
+    {
+        return disp;
+    }
 };
 class x86_instruction
 {
@@ -74,6 +85,7 @@ public:
     virtual int ins_endbr64(x86_instruction &) = 0;
     virtual int ins_invalid(x86_instruction &instruction) = 0;
     virtual int ins_xor(x86_instruction &instruction) = 0;
+    virtual int ins_mov(x86_instruction &instruction) = 0;
 };
 class x86_decoder
 {
@@ -90,6 +102,7 @@ class x86_decoder
     int interp_opcode_endbr(x86_instructions_handler *handler);
     int interp_opcode_0f(x86_instructions_handler *handler);
     int interp_xor_opcodes(x86_instructions_handler *handler);
+    int interp_mov_opcodes(x86_instructions_handler *handler);
     int interp_opcode(x86_instructions_handler *handler);
     int interp_prefix(x86_instructions_handler *handler);
 

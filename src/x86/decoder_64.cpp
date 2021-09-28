@@ -86,11 +86,37 @@ int x86_decoder::interp_opcode_0f(x86_instructions_handler *handler)
 int x86_decoder::interp_operand(x86_instructions_handler *handler)
 {
     uint8_t byte = fetch_byte(handler);
-
-    x86_mod_rm rm;
+    x86_mod_rm rm = {};
     rm.value = byte;
 
+    rm.mod = (byte >> 6) & (0b11);
+
+    rm.reg = (byte >> 3) & (0b111);
+    rm.rm = byte & 0b111;
+    rm.disp = 0;
+
+    if (rm.mod != 0b11 && rm.reg == 0b100)
+    {
+        rm.sib_follows = true;
+    }
+    else
+    {
+        rm.sib_follows = false;
+    }
+    if (rm.sib_follows)
+    {
+        error$("sib not supported");
+        return 0;
+    }
+    if (curr_decoded_ins.has_rex)
+    {
+        rm.rm = rm.rm | ((curr_decoded_ins.rex.b) << 3);
+        rm.reg = rm.reg | ((curr_decoded_ins.rex.r) << 3);
+        log$("rm: {} reg: {}", rm.rm, rm.reg);
+    }
+
     curr_decoded_ins.mod_rm = rm;
+
     curr_decoded_ins.has_mod_rm = true;
     return 1;
 }
@@ -107,6 +133,17 @@ int x86_decoder::interp_xor_opcodes(x86_instructions_handler *handler)
     return r;
 }
 
+int x86_decoder::interp_mov_opcodes(x86_instructions_handler *handler)
+{
+    int r = interp_operand(handler);
+
+    if (r == 1)
+    {
+        return handler->ins_mov(curr_decoded_ins);
+    }
+
+    return r;
+}
 int x86_decoder::interp_opcode(x86_instructions_handler *handler)
 {
 
@@ -120,6 +157,11 @@ int x86_decoder::interp_opcode(x86_instructions_handler *handler)
     {
         curr_decoded_ins.encoding = x86_op_encoding::MODRM_MODREG;
         return interp_xor_opcodes(handler);
+    }
+    else if (byte == 0x89)
+    {
+        curr_decoded_ins.encoding = x86_op_encoding::MODRM_MODREG;
+        return interp_mov_opcodes(handler);
     }
     else
     {

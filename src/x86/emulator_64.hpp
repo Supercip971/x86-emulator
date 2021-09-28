@@ -23,7 +23,7 @@ struct cpu_registers
     {
         struct
         {
-            uint64_t rax, rbx, rcx, rdx, rdi, rsi, rbp, rsp;
+            uint64_t rax, rcx, rdx, rbx, rsp, rbp, rsi, rdi;
             uint64_t r8, r9, r10, r11, r12, r13, r14, r15;
             uint64_t rflags, rip;
             uint64_t prip;
@@ -50,6 +50,7 @@ class x86_emulator : public emulator, x86_instructions_handler
     int ins_invalid(x86_instruction &instruction) final;
     int ins_endbr64(x86_instruction &instruction) final;
     int ins_xor(x86_instruction &instruction) final;
+    int ins_mov(x86_instruction &instruction) final;
 
     void write_op_rm(uint64_t value, const x86_instruction &instruction);
     uint64_t read_op_rm(const x86_instruction &instruction);
