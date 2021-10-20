@@ -148,7 +148,7 @@ int x86_decoder::interp_opcode(x86_instructions_handler *handler)
 {
 
     uint8_t byte = fetch_byte(handler);
-
+    
     if (byte == 0x0f)
     {
         return interp_opcode_0f(handler);
@@ -162,6 +162,12 @@ int x86_decoder::interp_opcode(x86_instructions_handler *handler)
     {
         curr_decoded_ins.encoding = x86_op_encoding::MODRM_MODREG;
         return interp_mov_opcodes(handler);
+    }
+    else if((byte & 0b11111000) == 0x58)
+    {
+        curr_decoded_ins.rd = byte & 0b111;
+        curr_decoded_ins.encoding = x86_op_encoding::RD;
+        return handler->ins_push(curr_decoded_ins);
     }
     else
     {

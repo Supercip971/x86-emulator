@@ -16,6 +16,7 @@ enum class x86_op_encoding : uint8_t
     MODRM_IMM = 2,    // mi
     MODRM_MODREG = 3, // mr
     MODREG_MODRM = 4, // rm
+    RD = 5,
 };
 
 struct x86_rex_prefix
@@ -35,7 +36,6 @@ struct x86_mod_rm
     uint8_t reg;
 
     bool sib_follows;
-    x86_mod_rm(){};
 
     bool has_sib() const
     {
@@ -72,8 +72,14 @@ public:
     std::vector<uint8_t> opcodes;
 
     bool has_mod_rm;
-    x86_mod_rm mod_rm;
+    
     x86_op_encoding encoding;
+    union 
+    {
+        x86_mod_rm mod_rm;
+    
+        int rd;
+    };
     void dump();
 };
 
@@ -86,7 +92,9 @@ public:
     virtual int ins_invalid(x86_instruction &instruction) = 0;
     virtual int ins_xor(x86_instruction &instruction) = 0;
     virtual int ins_mov(x86_instruction &instruction) = 0;
+    virtual int ins_push(x86_instruction &instruction) =0;
 };
+
 class x86_decoder
 {
     x86_instruction curr_decoded_ins;

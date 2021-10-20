@@ -91,4 +91,16 @@ int x86_emulator::ins_mov(x86_instruction &instruction)
     return 0;
 }
 
+int x86_emulator::ins_push(x86_instruction &instruction)
+{
+    if (instruction.encoding == x86_op_encoding::RD)
+    {
+        log$("push instruction ({}) not supported !", instruction.rd);
+
+        return 1;
+    }
+    log$("push instruction: {}", instruction.rd);
+    return 0;
+}
+
 } // namespace fp
